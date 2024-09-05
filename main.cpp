@@ -172,23 +172,10 @@ void encmat_turbocrypt(unsigned char *file, unsigned char *key) {
     for(int i = 0; i < fileName.size(); ++i) {
         name[i] = fileName[i];
     }
-
-    vector<unsigned char> newName;
-    for(int i = 0; i < len(name); ++i) {
-        newName.push_back(name[i]);
-    }
-    newName.push_back((unsigned char)'.');
-    newName.push_back((unsigned char)'m');
-    newName.push_back((unsigned char)'e');
-    newName.push_back((unsigned char)'n');
-    newName.push_back((unsigned char)'c');
-    newName.push_back((unsigned char)'p');
-    newName.push_back((unsigned char)'p');
-    newName.push_back((unsigned char)'\0');
-    unsigned char nName[newName.size()];
-    for(int i = 0; i < newName.size(); ++i) {
-        nName[i] = newName[i];
-    }
+    
+    string newName(reinterpret_cast<char*>(name));
+    newName += ".mencpp";
+    unsigned char *nName = reinterpret_cast<unsigned char*>(&newName[0]);
 
     ifstream input((const char*)file, ios::binary );
     ofstream output((const char*)nName, ios::binary );
