@@ -3,16 +3,16 @@
 #include <fstream>
 #include <iterator>
 #include <bitset>
+#include <stdio.h>
+#include <unistd.h>
 
 using namespace std;
-
 
 int len(unsigned char *str) {
     int i = -1;
     while(str[++i] != '\0') {}
     return i;
 }
-
 
 bool compareStr(unsigned char *a, unsigned char *b) {
     if(len(a) == len(b)) {
@@ -54,7 +54,7 @@ vector<unsigned char> maskInput(vector<unsigned char> msg, vector<unsigned char>
 }
 
 
-void decmat_turbocrypt(unsigned char *file, unsigned char *key) {
+void decmat_turbocrypt(unsigned char *file, char *key) {
     // Hier wird der Dateityp bestimmt
     int fileLen = len(file);
     int index = fileLen;
@@ -144,12 +144,12 @@ void decmat_turbocrypt(unsigned char *file, unsigned char *key) {
         output.close();
 
     } else {
-        cout<<"Du kannst nur .mencpp Dateien entschlüsseln!";
+        cout<<"Du kannst nur .mencpp Dateien entschlï¿½sseln!";
     }
 }
 
 
-void encmat_turbocrypt(unsigned char *file, unsigned char *key) {
+void encmat_turbocrypt(unsigned char *file, char *key) {
     // Hier wird der Dateityp bestimmt, bis Z.38
     int fileLen = len(file);
     int index = fileLen;
@@ -225,14 +225,18 @@ void encmat_turbocrypt(unsigned char *file, unsigned char *key) {
 }
 
 
-int main(int argc, unsigned char **argv)
-{
-    if(argc == 4 && compareStr(argv[1], (unsigned char*)"-e")) {
-        encmat_turbocrypt(argv[2], argv[3]);
-    } else if(argc == 4 && compareStr(argv[1], (unsigned char*)"-d")) {
-        decmat_turbocrypt(argv[2], argv[3]);
-    } else if(argc != 4) {
-        cout<<"Es fehlen Parameter! Aufbau:\nmencpp3 (-e/-d) [file] [key]";
+int main(int argc, unsigned char **argv) {
+    if(argc != 3) {
+        cout<<"Es fehlen Parameter! Aufbau:\nmencpp3 (-e/-d) [file]";
+    }
+
+    char *password;
+    password = getpass("Enter password: ");
+
+    if(argc == 3 && compareStr(argv[1], (unsigned char*)"-e")) {
+        encmat_turbocrypt(argv[2], (unsigned char *)password);
+    } else if(argc == 3 && compareStr(argv[1], (unsigned char*)"-d")) {
+        decmat_turbocrypt(argv[2], (unsigned char *)password);
     }
     return 0;
 }
