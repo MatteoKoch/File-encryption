@@ -54,7 +54,7 @@ vector<unsigned char> maskInput(vector<unsigned char> msg, vector<unsigned char>
 }
 
 
-void decmat_turbocrypt(unsigned char *file, char *key) {
+void decmat_turbocrypt(unsigned char *file, unsigned char *key) {
     // Hier wird der Dateityp bestimmt
     int fileLen = len(file);
     int index = fileLen;
@@ -71,9 +71,8 @@ void decmat_turbocrypt(unsigned char *file, char *key) {
     if(compareStr(type, (unsigned char*)"mencpp")) {
         // Hier wird der Dateiname bestimmt
         vector<unsigned char> fileName;
-        index = -1;
-        while(file[++index] != '.') {
-            fileName.push_back(file[index]);
+	for(int i = 0; i < index; ++i) {
+            fileName.push_back(file[i]);
         }
         fileName.push_back('\0');
         unsigned char name[fileName.size()];
@@ -144,12 +143,12 @@ void decmat_turbocrypt(unsigned char *file, char *key) {
         output.close();
 
     } else {
-        cout<<"Du kannst nur .mencpp Dateien entschl�sseln!";
+        cout<<"Du kannst nur .mencpp Dateien entschluesseln!\n";
     }
 }
 
 
-void encmat_turbocrypt(unsigned char *file, char *key) {
+void encmat_turbocrypt(unsigned char *file, unsigned char *key) {
     // Hier wird der Dateityp bestimmt, bis Z.38
     int fileLen = len(file);
     int index = fileLen;
@@ -165,9 +164,8 @@ void encmat_turbocrypt(unsigned char *file, char *key) {
 
     // Hier wird der Dateiname bestimmt, bis Z.50
     vector<unsigned char> fileName;
-    index = -1;
-    while(file[++index] != '.') {
-        fileName.push_back(file[index]);
+    for(int i = 0; i < index; ++i) {
+        fileName.push_back(file[i]);
     }
     fileName.push_back('\0');
     unsigned char name[fileName.size()];
@@ -227,12 +225,15 @@ void encmat_turbocrypt(unsigned char *file, char *key) {
 
 int main(int argc, unsigned char **argv) {
     if(argc != 3) {
-        cout<<"Es fehlen Parameter! Aufbau:\nmencpp3 (-e/-d) [file]";
+        cout<<"Es fehlen Parameter! Aufbau:\nmencpp3 (-e/-d) [file]\n";
+	return 0;
     }
-
     char *password;
-    password = getpass("Enter password: ");
-
+    password = getpass("Gib dei Passwort ei: ");
+    if(len((unsigned char*)password) <= 4) {
+	cout<<"Passwort muss mind. 4 Zeichen lang sein!\n";
+	return 0;
+    }
     if(argc == 3 && compareStr(argv[1], (unsigned char*)"-e")) {
         encmat_turbocrypt(argv[2], (unsigned char *)password);
     } else if(argc == 3 && compareStr(argv[1], (unsigned char*)"-d")) {
